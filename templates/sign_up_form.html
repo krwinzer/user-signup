@@ -5,15 +5,15 @@
 <form action="/sign-up" method="post">
   <label for="username">Username</label>
     <input type="text" name="username" value='{{username}}'/>
-  <p class="error">{{blank_field}}</p>
+  <p class="error">{{un_blank_field}}</p>
 <br/>
   <label for="password">Password</label>
     <input type="text" name="password" value='{{password}}'/>
-  <p class="error">{{blank_field}}</p>
+  <p class="error">{{pw_blank_field}}</p>
 <br/>
   <label for="verify">Verify Password</label>
     <input type="text" name="verify" value='{{verify}}'/>
-  <p class="error">{{blank_field}}</p>
+  <p class="error">{{verify_blank_field}}</p>
 <br/>
   <label for="email">Email (Optional)</label>
     <input type="text" name="email" value='{{email}}'/>

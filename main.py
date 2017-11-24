@@ -24,29 +24,32 @@ def sign_up():
     verify = request.form['verify']
     email = request.form['email']
 
-    blank_field = ''
+    un_blank_field = ''
+    pw_blank_field = ''
+    verify_blank_field = ''
     username_invalid = ''
     password_invalid = ''
     bad_match = ''
     email_invalid = ''
 
     if field_is_blank(username):
-        blank_field = "This field was left blank."
+        un_blank_field = "This field was left blank."
     else:
         username = username
     if field_is_blank(password):
-        blank_field = "This field was left blank."
+        pw_blank_field = "This field was left blank."
     else:
         password = password
     if field_is_blank(verify):
-        blank_field = "This field was left blank."
+        verify_blank_field = "This field was left blank."
     else:
         verify = verify
 
-    if not blank_field:
+    if not un_blank_field and not pw_blank_field and not verify_blank_field:
         return redirect('/valid-form')
     else:
-        return render_template('sign_up_form.html', blank_field=blank_field,
+        return render_template('sign_up_form.html', un_blank_field=un_blank_field,
+            pw_blank_field=pw_blank_field, verify_blank_field=verify_blank_field,
             username_invalid=username_invalid, password_invalid=password_invalid,
             bad_match=bad_match, email_invalid=email_invalid,
             username=username, password=password, verify=verify,
