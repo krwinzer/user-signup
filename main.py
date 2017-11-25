@@ -10,12 +10,6 @@ app.config['DEBUG'] = True
 def display_sign_up_form():
     return render_template('sign_up_form.html')
 
-def field_is_blank(field):
-    if field == '':
-        return False
-    else:
-        return True
-
 @app.route('/sign-up', methods=['POST'])
 def sign_up():
 
@@ -24,29 +18,64 @@ def sign_up():
     verify = request.form['verify']
     email = request.form['email']
 
+# ------------Blank Fields ---------------
+
     un_blank_field = ''
     pw_blank_field = ''
     verify_blank_field = ''
-    username_invalid = ''
-    password_invalid = ''
-    bad_match = ''
-    email_invalid = ''
 
-    if field_is_blank(username):
+    if len(username) == 0:
         un_blank_field = "This field was left blank."
     else:
         username = username
-    if field_is_blank(password):
+    if len(password) == 0:
         pw_blank_field = "This field was left blank."
     else:
         password = password
-    if field_is_blank(verify):
+    if len(verify) == 0:
         verify_blank_field = "This field was left blank."
     else:
         verify = verify
 
-    if not un_blank_field and not pw_blank_field and not verify_blank_field:
-        return redirect('/valid-form')
+# --------Invalid Username, Password, Email-------------
+    username_invalid = ''
+    password_invalid = ''
+    email_invalid = ''
+
+    if len(username) != 0:
+        if len(username) < 4 or len(username) > 19 or ' ' in username:
+            username_invalid = "The username must be between 4 and 19 characters long and cannot contain spaces."
+        else:
+            username = username
+
+    if len(password) != 0:
+        if len(password) < 4 or len(password) > 19 or ' ' in password:
+            password_invalid = "The password must be between 4 and 19 characters long and cannot contain spaces."
+        else:
+            password = password
+
+    if len(email) > 0:
+        if len(email) < 4 or len(email) > 40 or ' ' in email or '@' not in email or '.' not in email:
+            # if '@' not in email and '.' not in email:
+            email_invalid = 'Email must be between 4 and 20 characters long, cannot contain spaces, and must be in proper email format.'
+        else:
+            email = email
+
+# --------Password and Verify Do Not Match----------
+
+    bad_match = ''
+
+    for char, letter in zip(password, verify):
+        if char != letter:
+            bad_match = 'Passwords do not match.'
+            password = ''
+            verify = ''
+        else:
+            verify = verify
+            password = password
+
+    if not un_blank_field and not pw_blank_field and not verify_blank_field and not username_invalid and not password_invalid and not email_invalid and not bad_match:
+        return redirect('/welcome')
     else:
         return render_template('sign_up_form.html', un_blank_field=un_blank_field,
             pw_blank_field=pw_blank_field, verify_blank_field=verify_blank_field,
@@ -55,10 +84,32 @@ def sign_up():
             username=username, password=password, verify=verify,
             email=email)
 
-@app.route('/valid-form')
-def valid_form():
-    return '<h1>Thanks for signing up!</h1>'
+
+@app.route('/welcome', methods=['POST'])
+def welcome():
+    username = request.form['username']
+    return render_template('welcome.html', username=username)
 
 
 if __name__ == "__main__":
     app.run()
+
+# @app.route('/sign-up', methods=['POST'])
+# def sign_up():
+#     fields = {'username': '', 'password': '', 'verify': '', 'email': ''}
+#     errors = {}
+#
+#     for field in fields:
+#         f = request.form[field]
+#         if field_is_blank(f):
+#             errors['{}_error'.format(field)] = "Field cannot be blank"
+#         else:
+#             if field == 'password' and len(field) >= 20 or len(field) <=3:
+#                 errors['{}_error'.format(field)] = "Password must be between 4 and 19 characters long."
+#     fields[field] = f
+#
+#     if len(errors) == 0:
+#         return redirect('/valid-form')
+#     else:
+#         fields.update(errors)
+#         return render_template('sign_up_form.html', **fields)
