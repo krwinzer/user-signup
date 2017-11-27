@@ -75,7 +75,7 @@ def sign_up():
             password = password
 
     if not un_blank_field and not pw_blank_field and not verify_blank_field and not username_invalid and not password_invalid and not email_invalid and not bad_match:
-        return redirect('/welcome')
+        return render_template('welcome.html', username=username)
     else:
         return render_template('sign_up_form.html', un_blank_field=un_blank_field,
             pw_blank_field=pw_blank_field, verify_blank_field=verify_blank_field,
@@ -85,31 +85,5 @@ def sign_up():
             email=email)
 
 
-@app.route('/welcome', methods=['POST'])
-def welcome():
-    username = request.form['username']
-    return render_template('welcome.html', username=username)
-
-
 if __name__ == "__main__":
     app.run()
-
-# @app.route('/sign-up', methods=['POST'])
-# def sign_up():
-#     fields = {'username': '', 'password': '', 'verify': '', 'email': ''}
-#     errors = {}
-#
-#     for field in fields:
-#         f = request.form[field]
-#         if field_is_blank(f):
-#             errors['{}_error'.format(field)] = "Field cannot be blank"
-#         else:
-#             if field == 'password' and len(field) >= 20 or len(field) <=3:
-#                 errors['{}_error'.format(field)] = "Password must be between 4 and 19 characters long."
-#     fields[field] = f
-#
-#     if len(errors) == 0:
-#         return redirect('/valid-form')
-#     else:
-#         fields.update(errors)
-#         return render_template('sign_up_form.html', **fields)
